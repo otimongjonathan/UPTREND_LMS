@@ -58,7 +58,7 @@
                 animation: slideDownHeader 0.4s ease-out;
             }
         </style>
-        <div class="min-h-screen pt-16">
+        <div class="min-h-screen pt-16 flex flex-col">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
@@ -71,9 +71,11 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="flex-1">
                 {{ $slot }}
             </main>
+
+            @include('layouts.footer')
         </div>
     </body>
 </html>

@@ -177,10 +177,19 @@
 
                 <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
                     <a href="{{ route('login') }}" class="w-full sm:w-auto bg-white hover:bg-blue-50 active:bg-blue-100 text-primary-700 px-12 py-4 rounded-lg text-lg font-semibold uppercase tracking-wide transition duration-300 transform hover:scale-105 active:scale-95 shadow-xl cursor-pointer focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 font-bold">
-                        ➜ Login
+                        Staff Login
                     </a>
                     <a href="{{ route('register') }}" class="w-full sm:w-auto bg-primary-400 hover:bg-primary-300 active:bg-primary-500 text-white border-2 border-white px-12 py-4 rounded-lg text-lg font-semibold uppercase tracking-wide transition duration-300 transform hover:scale-105 active:scale-95 shadow-xl cursor-pointer focus:outline-none focus:ring-4 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-600 font-bold">
-                        ✨ Create Account
+                        Staff Register
+                    </a>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
+                    <a href="{{ route('customer.login', absolute: false) }}" class="w-full sm:w-auto bg-white/20 hover:bg-white/30 text-white border border-white/50 px-8 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide transition duration-300">
+                        Customer Login
+                    </a>
+                    <a href="{{ route('customer.register', absolute: false) }}" class="w-full sm:w-auto bg-primary-900/40 hover:bg-primary-900/55 text-white border border-white/40 px-8 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide transition duration-300">
+                        Customer Register
                     </a>
                 </div>
             </div>

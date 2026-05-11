@@ -41,7 +41,7 @@
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="/" class="nav-link hover:scale-110">
+                    <a href="{{ route('dashboard') }}" class="nav-link hover:scale-110">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
@@ -50,20 +50,20 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="nav-link">
                         📊 {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('loans.index')" :active="request()->routeIs('loans.*')" class="nav-link">
-                        💰 {{ __('Loans') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('applications.index')" :active="request()->routeIs('applications.*')" class="nav-link">
                         📋 {{ __('Applications') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('repayments.index')" :active="request()->routeIs('repayments.*')" class="nav-link">
-                        💳 {{ __('Repayments') }}
+                    <x-nav-link :href="route('loans.index')" :active="request()->routeIs('loans.*')" class="nav-link">
+                        💰 {{ __('Loans') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('loan-products.index')" :active="request()->routeIs('loan-products.*')" class="nav-link">
+                        💼 {{ __('Products') }}
                     </x-nav-link>
                     <x-nav-link :href="route('borrowers.index')" :active="request()->routeIs('borrowers.*')" class="nav-link">
                         👥 {{ __('Borrowers') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')" class="nav-link">
-                        📈 {{ __('Reports') }}
+                    <x-nav-link :href="route('repayments.index')" :active="request()->routeIs('repayments.*')" class="nav-link">
+                        💳 {{ __('Repayments') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -117,20 +117,20 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('loans.index')" :active="request()->routeIs('loans.*')">
-                {{ __('Loans') }}
-            </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('applications.index')" :active="request()->routeIs('applications.*')">
                 {{ __('Applications') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('repayments.index')" :active="request()->routeIs('repayments.*')">
-                {{ __('Repayments') }}
+            <x-responsive-nav-link :href="route('loans.index')" :active="request()->routeIs('loans.*')">
+                {{ __('Loans') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('loan-products.index')" :active="request()->routeIs('loan-products.*')">
+                {{ __('Products') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('borrowers.index')" :active="request()->routeIs('borrowers.*')">
                 {{ __('Borrowers') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('reports.index')" :active="request()->routeIs('reports.*')">
-                {{ __('Reports') }}
+            <x-responsive-nav-link :href="route('repayments.index')" :active="request()->routeIs('repayments.*')">
+                {{ __('Repayments') }}
             </x-responsive-nav-link>
         </div>
 

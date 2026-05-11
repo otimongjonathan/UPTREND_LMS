@@ -14,8 +14,13 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        // Redirect staff if already authenticated
+        if (Auth::guard('staff')->check()) {
+            return redirect()->route('dashboard');
+        }
+
         return view('auth.login');
     }
 
@@ -25,6 +30,15 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
+
+        $user = Auth::guard('staff')->user();
+        if (!$user || $user->role !== 'staff') {
+            Auth::guard('staff')->logout();
+
+            return back()->withErrors([
+                'email' => 'This login is for staff accounts only.',
+            ])->onlyInput('email');
+        }
 
         $request->session()->regenerate();
 
@@ -36,7 +50,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
+        Auth::guard('staff')->logout();
 
         $request->session()->invalidate();
 

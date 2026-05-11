@@ -51,6 +51,7 @@ class RegisteredUserController extends Controller
             'business_name' => $request->business_name,
             'address' => $request->address,
             'email' => $request->email,
+            'role' => 'staff',
             'tel_no' => $request->tel_no,
             'financial_compliance_statement' => $complianceFilePath,
             'password' => Hash::make($request->password),
@@ -58,7 +59,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        Auth::guard('staff')->login($user);
 
         return redirect(route('dashboard', absolute: false));
     }

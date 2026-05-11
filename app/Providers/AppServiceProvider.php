@@ -2,10 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\LoanApplication;
+use App\Policies\LoanApplicationPolicy;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
+    protected $policies = [
+        LoanApplication::class => LoanApplicationPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -19,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        foreach ($this->policies as $model => $policy) {
+            Gate::policy($model, $policy);
+        }
     }
 }

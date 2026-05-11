@@ -15,11 +15,43 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Create Staff User
+        User::firstOrCreate(
+            ['email' => 'staff@uptrendlms.com'],
+            [
+                'name' => 'Staff Admin',
+                'business_name' => 'UPTREND LMS',
+                'address' => '123 Business Street',
+                'tel_no' => '+1234567890',
+                'password' => bcrypt('password'),
+                'role' => 'staff',
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create Customer User
+        User::firstOrCreate(
+            ['email' => 'customer@uptrendlms.com'],
+            [
+                'name' => 'Customer User',
+                'business_name' => 'Customer Business',
+                'address' => '456 Customer Avenue',
+                'tel_no' => '+0987654321',
+                'password' => bcrypt('password'),
+                'role' => 'customer',
+                'email_verified_at' => now(),
+            ]
+        );
+
+        // Seed loan products and applications
+        $this->call([
+            LoanProductSeeder::class,
+            TestDataSeeder::class,
         ]);
+
+        echo "\n✅ Database seeded successfully!\n";
+        echo "Staff Login: staff@uptrendlms.com / password\n";
+        echo "Customer Login: customer@uptrendlms.com / password\n";
+        echo "8 test loan applications created\n\n";
     }
 }

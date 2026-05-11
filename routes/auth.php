@@ -17,7 +17,7 @@ Route::get('register', [RegisteredUserController::class, 'create'])
 Route::get('login', [AuthenticatedSessionController::class, 'create'])
     ->name('login');
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:staff')->group(function () {
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
@@ -35,7 +35,7 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:staff')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
