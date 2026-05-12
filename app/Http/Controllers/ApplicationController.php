@@ -4,32 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Models\LoanApplication;
 use App\Models\LoanProduct;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class ApplicationController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         $user = Auth::guard('staff')->user();
         
-        $baseQuery = LoanApplication::with(['user', 'product'])
-            ->where(function ($query) use ($user) {
-                $query->whereHas('product', function ($subQuery) use ($user) {
+        // Applications are for pending/approved/rejected statuses
+        $query = LoanApplication::with(['user', 'product'])
+            ->where(function ($q) use ($user) {
+                $q->whereHas('product', function ($subQuery) use ($user) {
                     $subQuery->where('provider_id', $user->id);
-                });
-                $query->orWhereNull('loan_product_id');
-            });
+                })
+                ->orWhereNull('loan_product_id');
+            })
+            ->whereIn('status', ['pending', 'approved', 'rejected']); // Only applications, not issued loans
         
         $statusCounts = [
-            'total' => (clone $baseQuery)->count(),
-            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
-            'approved' => (clone $baseQuery)->where('status', 'approved')->count(),
-            'rejected' => (clone $baseQuery)->where('status', 'rejected')->count(),
+            'total' => (clone $query)->count(),
+            'pending' => (clone $query)->where('status', 'pending')->count(),
+            'approved' => (clone $query)->where('status', 'approved')->count(),
+            'rejected' => (clone $query)->where('status', 'rejected')->count(),
         ];
         
-        $applications = $baseQuery->latest()->paginate(15);
+        $applications = $query->latest()->paginate(15);
 
         return view('applications.index', [
             'applications' => $applications,
@@ -70,7 +73,11 @@ class ApplicationController extends Controller
             }
         }
         
+        $oldStatus = $application->status;
         $application->update(['status' => 'approved']);
+        
+        // Send notification to customer - pending final approval
+        \App\Services\ComprehensiveNotificationService::notifyLoanPendingFinalApproval($application);
         
         try {
             $schedule = \App\Services\RepaymentWorkflowService::generateScheduleOnApproval($application);
@@ -93,7 +100,12 @@ class ApplicationController extends Controller
             abort(403, 'Unauthorized to reject this application.');
         }
         
+        $reason = request()->input('rejection_reason', 'Application did not meet our criteria.');
         $application->update(['status' => 'rejected']);
+        
+        // Send notification to customer
+        \App\Services\ComprehensiveNotificationService::notifyLoanRejected($application, $reason);
+        
         return redirect()->route('applications.show', $application)->with('success', 'Application rejected successfully.');
     }
     

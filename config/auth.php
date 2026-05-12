@@ -46,13 +46,11 @@ return [
         'staff' => [
             'driver' => 'session',
             'provider' => 'staff',
-            'cookie' => 'staff_session',
         ],
 
         'customer' => [
             'driver' => 'session',
             'provider' => 'customer',
-            'cookie' => 'customer_session',
         ],
     ],
 
@@ -77,7 +75,6 @@ return [
         'staff' => [
             'driver' => 'eloquent',
             'model' => User::class,
-            'where' => ['role' => 'staff'],
         ],
 
         'customer' => [

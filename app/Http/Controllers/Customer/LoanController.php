@@ -82,7 +82,7 @@ class LoanController extends Controller
         $loanGuaranteeTwoPath = $request->file('loan_guarantee_two')->store('loan-documents', 'public');
         $proofOfResidencePath = $request->file('proof_of_residence')->store('loan-documents', 'public');
 
-        LoanApplication::create([
+        $application = LoanApplication::create([
             'user_id' => auth()->id(),
             'loan_product_id' => $data['loan_product_id'],
             'applicant_full_name' => $data['applicant_full_name'],
@@ -114,6 +114,9 @@ class LoanController extends Controller
             'notes' => null,
             'status' => 'pending',
         ]);
+
+        // Notify staff about new application
+        \App\Services\ComprehensiveNotificationService::notifyStaffNewApplication($application);
 
         return redirect()->route('customer.loans.index')->with('status', 'Application received, We will get back to you within 3 business days');
     }

@@ -35,9 +35,32 @@
                 },
             }
         </script>
+
+        <style>
+            /* Scroll Animations */
+            .scroll-animate {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+                transition-delay: calc(var(--animation-order) * 0.05s);
+            }
+
+            .scroll-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Remove extra space below footer */
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+        <script src="{{ asset('js/scroll-animations.js') }}" defer></script>
     </head>
-    <body class="font-sans text-gray-900 antialiased bg-gradient-to-br from-primary-50 via-white to-primary-100">
-        <div class="min-h-screen flex flex-col pt-6 sm:pt-0 px-4 sm:px-6 lg:px-8">
+    <body class="font-sans text-gray-900 antialiased bg-gradient-to-br from-orange-50 via-white to-orange-100">
+        <div class="flex flex-col pt-6 sm:pt-0 px-4 sm:px-6 lg:px-8">
             <div class="w-full max-w-7xl mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg border-l-4 border-primary-500">
                 {{ $slot }}
             </div>

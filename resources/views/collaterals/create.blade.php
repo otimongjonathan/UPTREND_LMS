@@ -13,11 +13,36 @@
                     <form action="{{ route('collaterals.store', $loan) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
 
+                        <div class="rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
+                            <p class="font-semibold">Collateral capture is required before disbursement.</p>
+                            <p class="mt-1">You may add multiple collateral records for the same loan. Use one record per document.</p>
+                        </div>
+
                         <!-- Collateral Type -->
                         <div>
                             <label for="collateral_type" class="block text-sm font-medium text-gray-700">Collateral Type</label>
-                            <input type="text" id="collateral_type" name="collateral_type" value="{{ old('collateral_type') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" placeholder="e.g. Land, Vehicle, Jewelry" required>
+                            <select id="collateral_type" name="collateral_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="">Select collateral type</option>
+                                @foreach($collateralTypes as $type)
+                                    <option value="{{ $type }}" {{ old('collateral_type') === $type ? 'selected' : '' }}>{{ $type }}</option>
+                                @endforeach
+                            </select>
                             @error('collateral_type')
+                                <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="loan_supervisor_id" class="block text-sm font-medium text-gray-700">Loan Supervisor</label>
+                            <select id="loan_supervisor_id" name="loan_supervisor_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                                <option value="">Select supervising staff member</option>
+                                @foreach($supervisors as $supervisor)
+                                    <option value="{{ $supervisor->id }}" {{ old('loan_supervisor_id') == $supervisor->id ? 'selected' : '' }}>
+                                        {{ $supervisor->name }}{{ $supervisor->business_name ? ' - ' . $supervisor->business_name : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('loan_supervisor_id')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
@@ -51,9 +76,9 @@
 
                         <!-- Document -->
                         <div>
-                            <label for="collateral_document" class="block text-sm font-medium text-gray-700">Supporting Document (Optional)</label>
-                            <input type="file" id="collateral_document" name="collateral_document" class="mt-1 block w-full" accept=".pdf,.jpg,.jpeg,.png">
-                            <p class="text-gray-500 text-xs mt-1">Max 5MB - PDF, JPG, or PNG</p>
+                            <label for="collateral_document" class="block text-sm font-medium text-gray-700">Proof of Collateral (PDF)</label>
+                            <input type="file" id="collateral_document" name="collateral_document" class="mt-1 block w-full" accept=".pdf" required>
+                            <p class="text-gray-500 text-xs mt-1">Upload a PDF proof document. Max 5MB.</p>
                             @error('collateral_document')
                                 <p class="text-red-600 text-xs mt-1">{{ $message }}</p>
                             @enderror

@@ -30,6 +30,9 @@ class AuthController extends Controller
             return redirect()->route('customer.home');
         }
 
+        // Clear any existing staff session
+        Auth::guard('staff')->logout();
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
@@ -66,9 +69,9 @@ class AuthController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'business_name' => ['required', 'string', 'max:255'],
+            'business_name' => ['required', 'string', 'max:255', 'unique:users,business_name'],
             'address' => ['required', 'string', 'max:500'],
-            'tel_no' => ['required', 'string', 'max:20'],
+            'tel_no' => ['required', 'string', 'max:20', 'unique:users,tel_no'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -82,6 +85,9 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
+        // Send account creation notification
+        \App\Services\ComprehensiveNotificationService::notifyAccountCreated($user);
+
         Auth::guard('customer')->login($user);
         $request->session()->regenerate();
 
@@ -94,6 +100,9 @@ class AuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        // Clear any staff session data
+        Auth::guard('staff')->logout();
 
         return redirect('/');
     }

@@ -267,41 +267,43 @@
                         <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
                         </svg>
-                        Ready for Disbursement
+                        Ready to Issue Loan
                     </h3>
                 </div>
                 <div class="px-8 py-8 bg-blue-50">
                     <div class="mb-6">
                         <h4 class="text-xl font-bold text-gray-900 mb-3">Loan Approved ✓</h4>
                         <p class="text-gray-700 text-lg mb-4">
-                            This loan has been approved and is ready for disbursement. Click the button below to issue the loan and automatically generate the repayment schedule.
+                            This loan has been approved. Click below to proceed with disbursement and automatically generate the repayment schedule.
                         </p>
                         <div class="bg-blue-100 border-l-4 border-blue-600 p-4 rounded">
-                            <p class="text-blue-900 font-semibold">
-                                When you issue this loan:
+                            <p class="text-blue-900 font-semibold mb-2">
+                                Next Steps:
                             </p>
-                            <ul class="text-blue-800 mt-2 space-y-1 ml-4">
-                                <li>✓ Loan status will change to "Issued"</li>
-                                <li>✓ Loan is considered "Active"</li>
-                                <li>✓ Complete repayment schedule will be auto-generated</li>
-                                <li>✓ Customer will be notified automatically</li>
-                                <li>✓ Disbursement details will be recorded</li>
+                            <ul class="text-blue-800 space-y-1 ml-4">
+                                <li>1️⃣ Complete disbursement details (bank transfer, cash, etc.)</li>
+                                <li>2️⃣ Configure repayment schedule (frequency, installments)</li>
+                                <li>3️⃣ System will automatically:
+                                    <ul class="ml-6 mt-1">
+                                        <li>✓ Disburse the loan</li>
+                                        <li>✓ Generate repayment schedule with 2-month grace period</li>
+                                        <li>✓ Notify the customer</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class="flex gap-4">
-                        <form action="<?php echo e(route('loans.issue', $loan)); ?>" method="POST" class="inline">
-                            <?php echo csrf_field(); ?>
-                            <button type="submit" class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center">
-                                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M12 4a1 1 0 011 1v6h6a1 1 0 110 2h-6v6a1 1 0 11-2 0v-6H5a1 1 0 110-2h6V5a1 1 0 011-1z"/>
-                                </svg>
-                                ISSUE LOAN
-                            </button>
-                        </form>
+                        <a href="<?php echo e(route('disbursements.create', $loan)); ?>" 
+                           class="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"/>
+                            </svg>
+                            ISSUE LOAN & DISBURSE
+                        </a>
                         <a href="<?php echo e(route('loans.index')); ?>" 
                            class="px-8 py-4 bg-gray-400 hover:bg-gray-500 text-white rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl">
-                            Cancel
+                            Back to Loans
                         </a>
                     </div>
                 </div>

@@ -88,7 +88,8 @@
                             <tr>
                                 <th class="px-6 py-4 text-left font-semibold">Loan ID</th>
                                 <th class="px-6 py-4 text-left font-semibold">Borrower</th>
-                                <th class="px-6 py-4 text-left font-semibold">Amount</th>
+                                <th class="px-6 py-4 text-left font-semibold">Gross Amount</th>
+                                <th class="px-6 py-4 text-left font-semibold">Net Amount</th>
                                 <th class="px-6 py-4 text-left font-semibold">Method</th>
                                 <th class="px-6 py-4 text-left font-semibold">Status</th>
                                 <th class="px-6 py-4 text-left font-semibold">Date</th>
@@ -101,6 +102,7 @@
                                     <td class="px-6 py-4 font-semibold text-blue-600">#{{ $disburse->loan_application_id }}</td>
                                     <td class="px-6 py-4 text-gray-800">{{ $disburse->loanApplication->user->name }}</td>
                                     <td class="px-6 py-4 font-semibold text-gray-900">UGX {{ number_format($disburse->disbursement_amount, 0) }}</td>
+                                    <td class="px-6 py-4 font-bold text-green-600">UGX {{ number_format($disburse->net_disbursement_amount ?? $disburse->disbursement_amount, 0) }}</td>
                                     <td class="px-6 py-4 text-gray-700">{{ ucfirst(str_replace('_', ' ', $disburse->disbursement_method)) }}</td>
                                     <td class="px-6 py-4">
                                         <span class="px-3 py-1 rounded-full text-white text-xs font-bold
@@ -136,7 +138,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center">
+                                    <td colspan="8" class="px-6 py-12 text-center">
                                         <div class="text-gray-500">
                                             <p class="text-lg font-semibold mb-2">📭 No disbursements found</p>
                                             <p class="text-sm">No records match your current filters</p>

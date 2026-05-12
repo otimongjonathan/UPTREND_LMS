@@ -22,7 +22,7 @@ class LoanApplicationPolicy
     public function view(User $user, LoanApplication $loanApplication): bool
     {
         // Staff can view all applications
-        if ($user->role === 'staff') {
+        if (User::isStaffRole($user->role)) {
             return true;
         }
 

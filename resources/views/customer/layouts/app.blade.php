@@ -30,65 +30,25 @@
             },
         }
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gradient-to-br from-primary-50 via-white to-primary-100 min-h-screen text-gray-900 font-sans antialiased">
+<body class="customer-portal-body flex h-screen max-h-screen flex-col overflow-hidden bg-gradient-to-br from-orange-50 via-white to-orange-100 text-gray-900 font-sans antialiased">
+    <script>
+        // Apply saved theme immediately to prevent flash
+        (function() {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-theme');
+            }
+        })();
+    </script>
     <style>
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(18px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(217, 106, 43, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(217, 106, 43, 0.5); }
-        }
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
         .animate-fade-in-up {
             animation: fadeInUp 0.55s ease-out both;
-        }
-        .animate-slide-down {
-            animation: slideDown 0.5s ease-out both;
-        }
-        .nav-link {
-            position: relative;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 80%;
-            height: 3px;
-            background: linear-gradient(90deg, #d96a2b, #f48a47);
-            border-radius: 999px;
-            transition: transform 0.3s ease;
-        }
-        .nav-link:hover::before {
-            transform: translateX(-50%) scaleX(1);
-        }
-        .nav-link:hover {
-            transform: translateY(-2px);
-            color: #d96a2b;
-        }
-        .nav-link-active {
-            background: linear-gradient(135deg, #d96a2b 0%, #f48a47 100%);
-            color: white !important;
-            box-shadow: 0 4px 12px rgba(217, 106, 43, 0.3);
-        }
-        .nav-link-active::before {
-            display: none;
-        }
-        .nav-link-active:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 16px rgba(217, 106, 43, 0.4);
         }
         .card-hover {
             transition: transform 0.35s ease, box-shadow 0.35s ease;
@@ -97,106 +57,438 @@
             transform: translateY(-6px) scale(1.01);
             box-shadow: 0 20px 34px rgba(116, 47, 18, 0.18);
         }
-        .logo-glow {
-            animation: glow 3s ease-in-out infinite;
+        @supports (height: 100dvh) {
+            .customer-portal-body {
+                height: 100dvh;
+                max-height: 100dvh;
+            }
         }
-        .shimmer-text {
-            background: linear-gradient(90deg, #d96a2b 0%, #f48a47 50%, #d96a2b 100%);
-            background-size: 1000px 100%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: shimmer 3s linear infinite;
+
+        /* Dark Theme Styles */
+        .dark-theme {
+            background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a) !important;
+        }
+
+        .dark-theme .bg-white {
+            background-color: #2d2d2d !important;
+            border-color: #404040 !important;
+        }
+
+        .dark-theme .text-gray-900 {
+            color: #f3f4f6 !important;
+        }
+
+        .dark-theme .text-gray-600 {
+            color: #9ca3af !important;
+        }
+
+        .dark-theme .text-gray-800 {
+            color: #e5e7eb !important;
+        }
+
+        .dark-theme .text-gray-500 {
+            color: #9ca3af !important;
+        }
+
+        .dark-theme .text-gray-700 {
+            color: #d1d5db !important;
+        }
+
+        .dark-theme .text-gray-400 {
+            color: #9ca3af !important;
+        }
+
+        .dark-theme .bg-gray-50 {
+            background-color: #1f1f1f !important;
+        }
+
+        .dark-theme .bg-gray-100 {
+            background-color: #374151 !important;
+        }
+
+        .dark-theme .bg-gray-200 {
+            background-color: #4b5563 !important;
+        }
+
+        .dark-theme .border-gray-200 {
+            border-color: #404040 !important;
+        }
+
+        .dark-theme .border-gray-100 {
+            border-color: #374151 !important;
+        }
+
+        .dark-theme .bg-blue-50 {
+            background-color: #1e3a5f !important;
+        }
+
+        .dark-theme .text-blue-800 {
+            color: #93c5fd !important;
+        }
+
+        .dark-theme .text-blue-600 {
+            color: #60a5fa !important;
+        }
+
+        .dark-theme .border-blue-200 {
+            border-color: #1e40af !important;
+        }
+
+        .dark-theme .bg-green-50 {
+            background-color: #064e3b !important;
+        }
+
+        .dark-theme .text-green-800 {
+            color: #6ee7b7 !important;
+        }
+
+        .dark-theme .text-green-600 {
+            color: #34d399 !important;
+        }
+
+        .dark-theme .bg-green-100 {
+            background-color: #065f46 !important;
+        }
+
+        .dark-theme .bg-red-50 {
+            background-color: #7f1d1d !important;
+        }
+
+        .dark-theme .text-red-800 {
+            color: #fca5a5 !important;
+        }
+
+        .dark-theme .text-red-600 {
+            color: #f87171 !important;
+        }
+
+        .dark-theme .bg-red-100 {
+            background-color: #991b1b !important;
+        }
+
+        .dark-theme .bg-purple-100 {
+            background-color: #581c87 !important;
+        }
+
+        .dark-theme .text-purple-600 {
+            color: #c084fc !important;
+        }
+
+        .dark-theme .bg-orange-50 {
+            background-color: #431407 !important;
+        }
+
+        .dark-theme .bg-orange-100 {
+            background-color: #7c2d12 !important;
+        }
+
+        .dark-theme .text-orange-700 {
+            color: #fb923c !important;
+        }
+
+        .dark-theme .hover\:bg-gray-100:hover {
+            background-color: #374151 !important;
+        }
+
+        .dark-theme .hover\:border-primary-300:hover {
+            border-color: #d96a2b !important;
+        }
+
+        .dark-theme .hover\:bg-primary-50:hover {
+            background-color: rgba(217, 106, 43, 0.1) !important;
+        }
+
+        .dark-theme .bg-gradient-to-br {
+            background: linear-gradient(to bottom right, #1a1a1a, #2d2d2d, #1a1a1a) !important;
+        }
+
+        .dark-theme .bg-gradient-to-b {
+            background: linear-gradient(to bottom, #2d2d2d, #1a1a1a) !important;
+        }
+
+        .dark-theme nav {
+            background: linear-gradient(to bottom, #2d2d2d, #1a1a1a) !important;
+            border-color: #404040 !important;
+        }
+
+        .dark-theme .cp-sidebar-link {
+            color: #e5e7eb !important;
+        }
+
+        .dark-theme .cp-sidebar-link:hover {
+            background-color: rgba(217, 106, 43, 0.15) !important;
+        }
+
+        .dark-theme .cp-sidebar-link.active {
+            background: linear-gradient(90deg, rgba(217, 106, 43, 0.3), rgba(217, 106, 43, 0.15)) !important;
+        }
+
+        .dark-theme .cp-sidebar-section-title {
+            color: #9ca3af !important;
+        }
+
+        .dark-theme .bg-gradient-to-r.from-primary-50 {
+            background: linear-gradient(to right, rgba(217, 106, 43, 0.2), rgba(244, 138, 71, 0.2)) !important;
+        }
+
+        .dark-theme .bg-gradient-to-t {
+            background: linear-gradient(to top, #1a1a1a, transparent) !important;
+        }
+
+        .dark-theme .shadow-lg,
+        .dark-theme .shadow-sm {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .dark-theme .hover\:text-white:hover {
+            color: #ffffff !important;
+        }
+
+        .dark-theme .text-white {
+            color: #ffffff !important;
+        }
+
+        .dark-theme .cp-logo-container {
+            background: #1a1a1a !important;
+        }
+
+        .dark-theme .cp-logo-text {
+            background: linear-gradient(90deg, #f48a47, #d96a2b, #f48a47, #d96a2b) !important;
+            background-size: 200% auto !important;
+            -webkit-background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            background-clip: text !important;
+        }
+
+        .dark-theme footer {
+            background: linear-gradient(to right, #0f0f0f, #1a1a1a, #0f0f0f) !important;
+        }
+
+        .dark-theme .border-t {
+            border-color: #404040 !important;
+        }
+
+        .dark-theme .border-b {
+            border-color: #404040 !important;
         }
     </style>
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-primary-200 shadow-lg animate-slide-down">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="h-20 flex items-center justify-between">
-                <!-- Logo Section -->
-                <a href="{{ route('customer.home', absolute: false) }}" class="flex items-center gap-3 group">
-                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-lg logo-glow group-hover:scale-110 transition-transform duration-300">
-                        <svg class="h-7 w-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-extrabold shimmer-text uppercase tracking-wider">UPTREND</h1>
-                        <p class="text-xs text-gray-500 font-semibold">Customer Portal</p>
-                    </div>
-                </a>
+    <!-- Shell: sidebar column + one scroll column (sidebar does not move with page scroll) -->
+    <div x-data="{ sidebarOpen: true }" class="flex min-h-0 w-full flex-1 flex-col overflow-hidden md:flex-row">
+        <div class="fixed top-0 left-0 right-0 z-40 flex h-16 items-center border-b border-gray-100 bg-white/95 px-4 shadow-sm backdrop-blur-md md:hidden">
+            <button type="button" @click="sidebarOpen = !sidebarOpen" class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:outline-none">
+                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                    <path :class="{ 'hidden': sidebarOpen, 'inline-flex': !sidebarOpen }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path :class="{ 'hidden': !sidebarOpen, 'inline-flex': sidebarOpen }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <span class="ms-4 text-sm font-semibold text-gray-800">Menu</span>
+        </div>
 
-                <!-- Navigation Links -->
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('customer.home', absolute: false) }}" @class([
-                        'nav-link font-bold uppercase tracking-wide px-5 py-2.5 rounded-xl text-sm',
-                        'nav-link-active' => request()->routeIs('customer.home'),
-                        'text-gray-700 hover:bg-primary-50' => !request()->routeIs('customer.home'),
-                    ])>
-                        <span class="flex items-center gap-2">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                            </svg>
-                            Home
-                        </span>
-                    </a>
-                    <a href="{{ route('customer.loan-products', absolute: false) }}" @class([
-                        'nav-link font-bold uppercase tracking-wide px-5 py-2.5 rounded-xl text-sm',
-                        'nav-link-active' => request()->routeIs('customer.loan-products'),
-                        'text-gray-700 hover:bg-primary-50' => !request()->routeIs('customer.loan-products'),
-                    ])>
-                        <span class="flex items-center gap-2">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                            </svg>
-                            Loan Products
-                        </span>
-                    </a>
-                    <a href="{{ route('customer.loans.index', absolute: false) }}" @class([
-                        'nav-link font-bold uppercase tracking-wide px-5 py-2.5 rounded-xl text-sm',
-                        'nav-link-active' => request()->routeIs('customer.loans.*'),
-                        'text-gray-700 hover:bg-primary-50' => !request()->routeIs('customer.loans.*'),
-                    ])>
-                        <span class="flex items-center gap-2">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            My Loans
-                        </span>
-                    </a>
-                    <a href="{{ route('customer.profile', absolute: false) }}" @class([
-                        'nav-link font-bold uppercase tracking-wide px-5 py-2.5 rounded-xl text-sm',
-                        'nav-link-active' => request()->routeIs('customer.profile'),
-                        'text-gray-700 hover:bg-primary-50' => !request()->routeIs('customer.profile'),
-                    ])>
-                        <span class="flex items-center gap-2">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                            Profile
-                        </span>
-                    </a>
+        <nav :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }" class="fixed left-0 top-0 z-50 flex h-screen w-64 shrink-0 flex-col overflow-y-auto border-r border-gray-200 bg-gradient-to-b from-primary-50 to-white shadow-lg transition-transform duration-300 ease-in-out md:static md:z-auto md:h-screen md:max-h-none md:translate-x-0">
+            <style>
+                @keyframes cpSlideInLeft {
+                    from { opacity: 0; transform: translateX(-20px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+                @keyframes cpFadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes cpPulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.8; }
+                }
+                @keyframes cpIconBounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-3px); }
+                }
+                .cp-sidebar-link {
+                    position: relative;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    display: flex;
+                    align-items: center;
+                    padding: 0.875rem 1.5rem;
+                    color: #1f2937;
+                    text-decoration: none;
+                    border-left: 3px solid transparent;
+                    overflow: hidden;
+                    animation: cpSlideInLeft 0.4s ease-out both;
+                }
+                .cp-sidebar-link::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    height: 100%;
+                    width: 0;
+                    background: linear-gradient(90deg, rgba(217, 106, 43, 0.15), rgba(217, 106, 43, 0.05));
+                    transition: width 0.3s ease;
+                    z-index: 0;
+                }
+                .cp-sidebar-link:hover::before { width: 100%; }
+                .cp-sidebar-link > * { position: relative; z-index: 1; }
+                .cp-sidebar-link:hover {
+                    background-color: rgba(217, 106, 43, 0.08);
+                    color: #d96a2b;
+                    border-left-color: #d96a2b;
+                    transform: translateX(4px);
+                    padding-left: 1.75rem;
+                }
+                .cp-sidebar-link:hover .cp-link-icon {
+                    animation: cpIconBounce 0.6s ease-in-out;
+                    transform: scale(1.15);
+                }
+                .cp-sidebar-link.active {
+                    background: linear-gradient(90deg, rgba(217, 106, 43, 0.2), rgba(217, 106, 43, 0.08));
+                    color: #b4531f;
+                    border-left-color: #d96a2b;
+                    font-weight: 600;
+                    box-shadow: inset 0 1px 3px rgba(217, 106, 43, 0.1);
+                }
+                .cp-sidebar-link.active .cp-link-icon { animation: cpPulse 2s ease-in-out infinite; }
+                .cp-link-icon {
+                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    display: inline-block;
+                }
+                .cp-link-text {
+                    font-size: 0.875rem;
+                    font-weight: 600;
+                    letter-spacing: 0.05em;
+                    transition: all 0.3s ease;
+                    color: inherit;
+                }
+                .cp-sidebar-link:hover .cp-link-text { letter-spacing: 0.08em; }
+                @keyframes cpLogoGlow {
+                    0%, 100% { box-shadow: 0 0 20px rgba(217, 106, 43, 0.3); }
+                    50% { box-shadow: 0 0 30px rgba(217, 106, 43, 0.6); }
+                }
+                @keyframes cpTextShimmer {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                }
+                .cp-sidebar-logo {
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: linear-gradient(90deg, #d96a2b, #b4531f);
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                    margin-top: 4rem;
+                    animation: cpFadeIn 0.6s ease-out;
+                    min-height: 88px;
+                }
+                .cp-logo-container {
+                    background: white;
+                    width: 100%;
+                    height: 100%;
+                    min-height: 88px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 1.25rem 1.5rem;
+                    animation: cpLogoGlow 3s ease-in-out infinite;
+                    transition: all 0.3s ease;
+                }
+                .cp-logo-container:hover {
+                    transform: scale(1.02);
+                    box-shadow: 0 0 40px rgba(217, 106, 43, 0.8);
+                }
+                .cp-logo-text {
+                    background: linear-gradient(90deg, #d96a2b, #f48a47, #d96a2b, #f48a47);
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    background-clip: text;
+                    animation: cpTextShimmer 4s linear infinite;
+                    font-weight: 800;
+                    font-size: 1.25rem;
+                    letter-spacing: 0.05em;
+                }
+                .cp-sidebar-section-title {
+                    padding: 1rem 1.5rem 0.5rem;
+                    font-size: 0.7rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.1em;
+                    color: #6b7280;
+                    animation: cpSlideInLeft 0.5s ease-out both;
+                }
+                .cp-user-section { animation: cpSlideInLeft 0.6s ease-out 0.5s both; }
+                @media (min-width: 768px) {
+                    .cp-sidebar-logo { margin-top: 0; }
+                }
+            </style>
+
+            <div class="cp-sidebar-logo">
+                <a href="{{ route('customer.home', absolute: false) }}" @click="sidebarOpen = false" class="cp-logo-container">
+                    <span class="cp-logo-text">UPTREND</span>
+                    <span class="mt-1 text-xs font-semibold uppercase tracking-wider text-gray-500">Customer Portal</span>
+                </a>
+            </div>
+
+            <div class="flex flex-1 flex-col px-4 py-6">
+                <div class="cp-sidebar-section-title">Main</div>
+                <a href="{{ route('customer.home', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link {{ request()->routeIs('customer.home') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">🏠</span>
+                    <span class="cp-link-text">HOME</span>
+                </a>
+                <a href="{{ route('customer.loan-products', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link {{ request()->routeIs('customer.loan-products') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">💼</span>
+                    <span class="cp-link-text">PRODUCTS</span>
+                </a>
+                <a href="{{ route('customer.loans.index', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link relative {{ request()->routeIs('customer.loans.*') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">💰</span>
+                    <span class="cp-link-text">MY LOANS</span>
+                    @if(Auth::guard('customer')->check() && Auth::guard('customer')->user()->loanApplications()->where('status', 'pending')->count() > 0)
+                        <span class="absolute end-3 top-1/2 z-20 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">{{ Auth::guard('customer')->user()->loanApplications()->where('status', 'pending')->count() }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('customer.notifications', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link relative {{ request()->routeIs('customer.notifications') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">🔔</span>
+                    <span class="cp-link-text">ALERTS</span>
+                    @if(Auth::guard('customer')->check() && Auth::guard('customer')->user()->unreadNotifications->count() > 0)
+                        <span class="absolute end-3 top-1/2 z-20 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">{{ Auth::guard('customer')->user()->unreadNotifications->count() }}</span>
+                    @endif
+                </a>
+                <a href="{{ route('customer.profile', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link {{ request()->routeIs('customer.profile') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">👤</span>
+                    <span class="cp-link-text">PROFILE</span>
+                </a>
+                <a href="{{ route('customer.settings', absolute: false) }}" @click="sidebarOpen = false" class="cp-sidebar-link {{ request()->routeIs('customer.settings') ? 'active' : '' }}">
+                    <span class="cp-link-icon text-xl me-3">⚙️</span>
+                    <span class="cp-link-text">SETTINGS</span>
+                </a>
+            </div>
+
+            <div class="cp-user-section mt-auto border-t border-gray-200 bg-gradient-to-t from-white to-transparent">
+                <div class="p-4">
+                    @auth('customer')
+                        <div class="mb-4 rounded-lg border border-primary-100 bg-gradient-to-r from-primary-50 to-orange-50 p-3 transition-all duration-300 hover:shadow-md">
+                            <div class="truncate text-sm font-semibold text-gray-800">{{ Auth::guard('customer')->user()->name }}</div>
+                            <div class="mt-1 truncate text-xs font-normal text-gray-500">{{ Auth::guard('customer')->user()->email }}</div>
+                        </div>
+                    @endauth
                     <form method="POST" action="{{ route('customer.logout', absolute: false) }}">
                         @csrf
-                        <button type="submit" class="ml-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 font-bold uppercase tracking-wide text-sm shadow-lg hover:shadow-xl hover:scale-105 flex items-center gap-2">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                            </svg>
-                            Logout
+                        <button type="submit" class="cp-sidebar-link w-full text-left hover:bg-red-50 hover:text-red-600 hover:border-red-500">
+                            <span class="cp-link-icon text-lg me-2">🚪</span>
+                            <span class="cp-link-text">LOG OUT</span>
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <main class="pt-28 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in-up">
+        <div class="flex min-h-0 w-full flex-1 flex-col overflow-y-auto overscroll-y-contain pt-16 md:pt-0">
+    <main class="p-8 md:pt-8">
+        <div class="max-w-7xl mx-auto animate-fade-in-up">
             @yield('content')
         </div>
     </main>
 
     <!-- Customer Footer -->
-    <footer class="mt-16 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
+    <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Main Footer Content -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-12">
@@ -436,6 +728,8 @@
             });
         </script>
     </footer>
+    </div>
+    </div>
 </body>
 </html>
 

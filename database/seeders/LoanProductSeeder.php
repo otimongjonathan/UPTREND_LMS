@@ -164,7 +164,10 @@ class LoanProductSeeder extends Seeder
             $productData['provider_id'] = $provider->id;
             $productData['provider_company'] = $provider->business_name;
 
-            LoanProduct::create($productData);
+            LoanProduct::updateOrCreate(
+                ['name' => $productData['name']],
+                $productData
+            );
         }
 
         echo "\n✅ Successfully seeded " . count($loanProducts) . " loan products!\n";

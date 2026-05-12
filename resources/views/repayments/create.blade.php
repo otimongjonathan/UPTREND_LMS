@@ -14,8 +14,8 @@
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-xl border border-gray-100">
                 <div class="px-6 py-6 border-b border-gray-200">
-                    <h3 class="text-xl font-bold text-gray-900">Create New Repayment Installment</h3>
-                    <p class="text-sm text-gray-600 mt-1">Create a manual repayment schedule entry for an issued loan</p>
+                    <h3 class="text-xl font-bold text-gray-900">Create Manual Repayment Installment</h3>
+                    <p class="text-sm text-gray-600 mt-1">Create a single manual repayment installment. Note: Repayment schedules are automatically generated when loans are issued.</p>
                 </div>
 
                 <div class="px-6 py-6">
@@ -37,15 +37,15 @@
                         <div class="bg-blue-50 p-4 rounded-lg">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Select Loan Application</label>
                             <select name="loan_application_id" id="loan_select" required class="w-full rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-orange-500">
-                                <option value="">Choose a loan to create repayment for...</option>
+                                <option value="">Choose a borrower and their loan...</option>
                                 @foreach ($loans as $loan)
                                     <option value="{{ $loan->id }}" 
                                             data-amount="{{ $loan->amount }}"
                                             data-rate="{{ $loan->applied_interest_rate ?? 15 }}"
                                             data-term="{{ $loan->repayment_term ?? 12 }}"
                                             @selected(old('loan_application_id') == $loan->id)>
-                                        #{{ $loan->id }} - {{ $loan->user?->name }} 
-                                        (UGX {{ number_format($loan->amount, 2) }} @ {{ $loan->applied_interest_rate ?? 15 }}%)
+                                        {{ $loan->applicant_full_name ?? $loan->user?->name }} - Loan #{{ $loan->id }} 
+                                        (UGX {{ number_format($loan->amount, 0) }} @ {{ $loan->applied_interest_rate ?? 15 }}%)
                                     </option>
                                 @endforeach
                             </select>
@@ -62,7 +62,10 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Due Date</label>
+                                <label class="block text-sm font-medium text-gray-700">
+                                    Due Date
+                                    <span class="text-xs text-gray-500 font-normal ml-1">(When borrower must pay this installment)</span>
+                                </label>
                                 <input type="date" name="due_date" value="{{ old('due_date') }}" required 
                                        class="mt-1 w-full rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-orange-500">
                                 @error('due_date') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
@@ -131,9 +134,14 @@
                         <!-- Additional Details -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Remaining Balance After Payment</label>
-                                <input type="number" name="remaining_balance" value="{{ old('remaining_balance', 0) }}" step="0.01" min="0" 
-                                       class="mt-1 w-full rounded-lg border border-gray-300 focus:border-orange-500 focus:ring-orange-500">
+                                <label class="block text-sm font-medium text-gray-700">
+                                    Remaining Balance After Payment
+                                    <span class="text-xs text-gray-500 font-normal ml-1">(Auto-calculated)</span>
+                                </label>
+                                <input type="number" name="remaining_balance" id="remaining_balance" value="{{ old('remaining_balance', '') }}" step="0.01" min="0" readonly
+                                       class="mt-1 w-full rounded-lg border border-gray-300 bg-gray-100 focus:border-orange-500 focus:ring-orange-500"
+                                       placeholder="Will be calculated automatically">
+                                <p class="text-xs text-gray-500 mt-1">Outstanding loan balance after this payment</p>
                                 @error('remaining_balance') <p class="text-sm text-red-600 mt-1">{{ $message }}</p> @enderror
                             </div>
 
@@ -186,7 +194,7 @@
                         <!-- Action Buttons -->
                         <div class="flex gap-3 pt-6 border-t">
                             <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition">
-                                ✓ Create Repayment Schedule
+                                ✓ Create Installment
                             </button>
                             <a href="{{ route('repayments.index') }}" class="px-6 py-3 bg-gray-500 text-white rounded-lg font-semibold hover:bg-gray-600 transition">
                                 ✗ Cancel

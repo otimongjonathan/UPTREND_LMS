@@ -221,7 +221,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">
-                        Loan Amount (₱)
+                        Loan Amount (UGX)
                         @if($product)
                             <span class="text-xs text-orange-600 ml-2">(Min: {{ number_format($product->min_amount, 0) }} - Max: {{ number_format($product->max_amount, 0) }})</span>
                         @endif

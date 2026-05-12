@@ -21,7 +21,7 @@
         </div>
 
         <!-- Status Section -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
             <!-- Current Status -->
             <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
                 <p class="text-sm text-gray-600 mb-2">Current Status</p>
@@ -45,6 +45,17 @@
                         {{ $disbursement->status }}
                     </span>
                 </div>
+            </div>
+
+            <!-- Loan Supervisor -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-indigo-500">
+                <p class="text-sm text-gray-600 mb-2">Loan Supervisor</p>
+                <p class="text-lg font-semibold text-gray-900">
+                    {{ $disbursement->loanSupervisor->name ?? 'Not Assigned' }}
+                </p>
+                @if($disbursement->loanSupervisor)
+                    <p class="text-xs text-gray-500 mt-1">{{ $disbursement->loanSupervisor->email }}</p>
+                @endif
             </div>
 
             <!-- Transaction Status -->
@@ -87,7 +98,7 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <p class="text-sm text-gray-600">Amount</p>
+                            <p class="text-sm text-gray-600">Gross Amount</p>
                             <p class="text-2xl font-bold text-gray-900">
                                 UGX {{ number_format($disbursement->disbursement_amount, 0) }}
                             </p>
@@ -112,6 +123,33 @@
                             <p class="text-lg font-semibold text-gray-900">
                                 {{ $disbursement->reference_number ?? 'N/A' }}
                             </p>
+                        </div>
+                    </div>
+
+                    <!-- Fee Breakdown -->
+                    <div class="mt-6 pt-6 border-t">
+                        <h4 class="text-md font-bold text-gray-900 mb-4">Fee Breakdown</h4>
+                        <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-600">Processing Fee ({{ $disbursement->processing_fee_percent }}%)</span>
+                                <span class="text-sm font-semibold text-red-600">- UGX {{ number_format($disbursement->processing_fee_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-600">Insurance Premium ({{ $disbursement->insurance_premium_percent }}%)</span>
+                                <span class="text-sm font-semibold text-red-600">- UGX {{ number_format($disbursement->insurance_premium_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-sm text-gray-600">Tax ({{ $disbursement->tax_percent }}%)</span>
+                                <span class="text-sm font-semibold text-red-600">- UGX {{ number_format($disbursement->tax_amount, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between pt-3 border-t border-gray-300">
+                                <span class="text-sm font-bold text-gray-900">Total Deductions</span>
+                                <span class="text-sm font-bold text-red-600">- UGX {{ number_format($disbursement->total_deductions, 2) }}</span>
+                            </div>
+                            <div class="flex justify-between pt-3 border-t-2 border-gray-400">
+                                <span class="text-base font-bold text-gray-900">Net Disbursement</span>
+                                <span class="text-lg font-bold text-green-600">UGX {{ number_format($disbursement->net_disbursement_amount, 2) }}</span>
+                            </div>
                         </div>
                     </div>
 

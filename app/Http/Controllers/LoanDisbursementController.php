@@ -9,6 +9,7 @@ use App\Services\RepaymentScheduleService;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 class LoanDisbursementController extends Controller
 {
@@ -53,6 +54,7 @@ class LoanDisbursementController extends Controller
             'approver',
             'disburser',
             'verifier',
+            'loanSupervisor',
             'repaymentSchedules'
         ]);
 
@@ -61,30 +63,121 @@ class LoanDisbursementController extends Controller
 
     public function create(LoanApplication $loan): View
     {
-        return view('disbursements.create', compact('loan'));
+        $loan->load(['user', 'product', 'collaterals.loanSupervisor', 'guarantors']);
+        
+        // Get all staff members for loan supervisor assignment
+        $staffMembers = \App\Models\User::where('role', 'staff')->get();
+
+        return view('disbursements.create', compact('loan', 'staffMembers'));
     }
 
     public function store(Request $request, LoanApplication $loan): RedirectResponse
     {
+        if ($loan->status !== 'approved') {
+            return redirect()->back()->with('error', 'Only approved loans can be disbursed.');
+        }
+
+        if (! $loan->collaterals()->exists()) {
+            return redirect()->route('collaterals.create', $loan)
+                ->with('error', 'Capture at least one collateral before disbursing this loan.');
+        }
+
+        if (! $loan->guarantors()->exists()) {
+            return redirect()->route('guarantors.create', $loan)
+                ->with('error', 'Capture at least one guarantor before disbursing this loan.');
+        }
+
         $validated = $request->validate([
+            'loan_supervisor_id' => 'required|exists:users,id',
             'disbursement_amount' => 'required|numeric|min:0|max:' . $loan->amount,
             'disbursement_date' => 'required|date',
-            'disbursement_method' => 'required|in:bank_transfer,check,cash',
-            'bank_account' => 'nullable|string|max:50',
+            'disbursement_method' => 'required|in:bank_transfer,mobile_money,cash,cheque',
+            'payment_frequency' => 'required|in:weekly,bi-weekly,monthly,quarterly',
+            'number_of_installments' => 'required|integer|min:1|max:360',
+            
+            // Bank Transfer Details
+            'bank_name' => 'nullable|string|max:100',
+            'account_holder_name' => 'nullable|string|max:100',
+            'account_number' => 'nullable|string|max:50',
+            'routing_number' => 'nullable|string|max:20',
+            'transaction_id' => 'nullable|string|max:100',
+            
+            // Mobile Money Details
+            'mobile_number' => 'nullable|string|max:20',
+            'mobile_network' => 'nullable|string|max:50',
+            
+            // Cash Details
+            'cash_received_by' => 'nullable|string|max:100',
+            
+            // General
             'reference_number' => 'nullable|string|max:100',
-            'disbursement_document' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
             'notes' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('disbursement_document')) {
-            $validated['disbursement_document_path'] = $request->file('disbursement_document')
-                ->store('loan-disbursements', 'public');
-        }
+        // Calculate fees and taxes from loan product
+        $loanProduct = $loan->product;
+        $disbursementAmount = $validated['disbursement_amount'];
+        
+        $processingFeePercent = $loanProduct->processing_fee_percent ?? 0;
+        $processingFeeAmount = ($disbursementAmount * $processingFeePercent) / 100;
+        
+        $insurancePremiumPercent = $loanProduct->insurance_premium_percent ?? 0;
+        $insurancePremiumAmount = ($disbursementAmount * $insurancePremiumPercent) / 100;
+        
+        // Tax is typically 10% in Uganda (VAT on fees)
+        $taxPercent = 10;
+        $taxAmount = (($processingFeeAmount + $insurancePremiumAmount) * $taxPercent) / 100;
+        
+        $totalDeductions = $processingFeeAmount + $insurancePremiumAmount + $taxAmount;
+        $netDisbursementAmount = $disbursementAmount - $totalDeductions;
 
-        $disbursement = $loan->disbursements()->create($validated);
+        // Create disbursement record
+        $disbursement = $loan->disbursements()->create([
+            'loan_supervisor_id' => $validated['loan_supervisor_id'],
+            'disbursement_amount' => $disbursementAmount,
+            'processing_fee_percent' => $processingFeePercent,
+            'processing_fee_amount' => $processingFeeAmount,
+            'insurance_premium_percent' => $insurancePremiumPercent,
+            'insurance_premium_amount' => $insurancePremiumAmount,
+            'tax_percent' => $taxPercent,
+            'tax_amount' => $taxAmount,
+            'total_deductions' => $totalDeductions,
+            'net_disbursement_amount' => $netDisbursementAmount,
+            'disbursement_date' => $validated['disbursement_date'],
+            'disbursement_method' => $validated['disbursement_method'],
+            'payment_frequency' => $validated['payment_frequency'],
+            'number_of_installments' => $validated['number_of_installments'],
+            'bank_name' => $validated['bank_name'] ?? null,
+            'account_holder_name' => $validated['account_holder_name'] ?? null,
+            'account_number' => $validated['account_number'] ?? null,
+            'routing_number' => $validated['routing_number'] ?? null,
+            'transaction_id' => $validated['transaction_id'] ?? null,
+            'cash_received_by' => $validated['cash_received_by'] ?? null,
+            'reference_number' => $validated['reference_number'] ?? 'DISB-' . $loan->id . '-' . now()->format('YmdHis'),
+            'notes' => $validated['notes'] ?? null,
+            'status' => 'disbursed',
+            'approved_by' => Auth::guard('staff')->id(),
+            'approved_at' => now(),
+            'disbursed_by' => Auth::guard('staff')->id(),
+            'disbursed_at' => now(),
+            'transaction_status' => 'completed',
+            'transaction_recorded_at' => now(),
+        ]);
 
-        return redirect()->route('disbursements.show', $disbursement)
-            ->with('success', 'Disbursement created successfully. Configure repayment schedule.');
+        // Update loan status to active (ISSUED)
+        $loan->update([
+            'status' => 'active',
+            'disbursement_date' => $validated['disbursement_date']
+        ]);
+
+        // Generate repayment schedule automatically
+        RepaymentScheduleService::generateSchedule($disbursement);
+
+        // Send notification to customer
+        \App\Services\ComprehensiveNotificationService::notifyLoanDisbursed($disbursement);
+
+        return redirect()->route('schedules.show', $loan->loanRepaymentSchedule)
+            ->with('success', 'Loan disbursed successfully! Repayment schedule has been generated with 2-month grace period.');
     }
 
     /**
@@ -142,7 +235,7 @@ class LoanDisbursementController extends Controller
 
         $disbursement->update([
             'status' => 'approved',
-            'approved_by' => auth()->id(),
+            'approved_by' => Auth::guard('staff')->id(),
             'approved_at' => now(),
         ]);
 
@@ -160,7 +253,7 @@ class LoanDisbursementController extends Controller
 
         $disbursement->update([
             'status' => 'disbursed',
-            'disbursed_by' => auth()->id(),
+            'disbursed_by' => Auth::guard('staff')->id(),
             'disbursed_at' => now(),
             'transaction_status' => 'completed',
             'transaction_recorded_at' => now(),
@@ -187,7 +280,7 @@ class LoanDisbursementController extends Controller
         }
 
         $disbursement->update([
-            'verified_by' => auth()->id(),
+            'verified_by' => Auth::guard('staff')->id(),
             'verified_at' => now(),
             'transaction_status' => 'completed',
         ]);

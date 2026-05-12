@@ -1,4 +1,4 @@
-<footer class="mt-12 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
+<footer class="shrink-0 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Main Footer Content -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 py-12">

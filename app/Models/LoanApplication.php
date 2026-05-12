@@ -106,6 +106,11 @@ class LoanApplication extends Model
         return $this->hasMany(RepaymentSchedule::class);
     }
 
+    public function loanRepaymentSchedule()
+    {
+        return $this->hasOne(LoanRepaymentSchedule::class);
+    }
+
     public function product()
     {
         return $this->belongsTo(LoanProduct::class, 'loan_product_id');

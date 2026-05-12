@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LoanProduct;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -13,12 +14,15 @@ class LoanProductController extends Controller
     {
         // For staff: show only their business's products
         if (auth('staff')->check()) {
-            $products = LoanProduct::where('provider_id', auth('staff')->id())->paginate(15);
+            $products = LoanProduct::query()
+                ->get()
+                ->filter(fn ($product) => (int) $product->provider_id === (int) auth('staff')->id())
+                ->values();
             return view('loan-products.index', compact('products'));
         }
         
-        // For customers: show only active products
-        $products = LoanProduct::where('is_active', true)->paginate(15);
+        // For customers: show only active products with provider details
+        $products = LoanProduct::with('provider')->where('is_active', true)->paginate(15);
         return view('customer.loan-products', compact('products'));
     }
 
@@ -47,18 +51,23 @@ class LoanProductController extends Controller
 
         // Automatically set the provider as the logged-in staff user
         $validated['provider_id'] = auth('staff')->id();
-        $validated['provider_company'] = auth('staff')->user()->business_name;
+        $validated['provider_company'] = auth('staff')->user()->name;
 
-        LoanProduct::create($validated);
+        $product = LoanProduct::create($validated);
+
+        // Notify all customers about new product
+        if ($product->is_active) {
+            \App\Services\ComprehensiveNotificationService::notifyNewLoanProduct($product);
+        }
 
         return redirect()->route('loan-products.index')
-            ->with('success', 'Loan product created successfully.');
+            ->with('success', "Loan product '{$product->name}' has been created successfully!" . ($product->is_active ? ' Customers have been notified.' : ''));
     }
 
     public function edit(LoanProduct $loanProduct): View
     {
         // Ensure staff can only edit their own business's products
-        if (auth('staff')->user()->role === 'staff' && $loanProduct->provider_id !== auth('staff')->id()) {
+        if (User::isStaffRole(auth('staff')->user()->role) && $loanProduct->provider_id !== auth('staff')->id()) {
             abort(403, 'Unauthorized access to this loan product.');
         }
         
@@ -68,7 +77,7 @@ class LoanProductController extends Controller
     public function update(Request $request, LoanProduct $loanProduct): RedirectResponse
     {
         // Ensure staff can only update their own business's products
-        if (auth('staff')->user()->role === 'staff' && $loanProduct->provider_id !== auth('staff')->id()) {
+        if (User::isStaffRole(auth('staff')->user()->role) && $loanProduct->provider_id !== auth('staff')->id()) {
             abort(403, 'Unauthorized access to this loan product.');
         }
         
@@ -91,26 +100,27 @@ class LoanProductController extends Controller
         $loanProduct->update($validated);
 
         return redirect()->route('loan-products.index')
-            ->with('success', 'Loan product updated successfully.');
+            ->with('success', "Loan product '{$loanProduct->name}' has been updated successfully!");
     }
 
     public function destroy(LoanProduct $loanProduct): RedirectResponse
     {
         // Ensure staff can only delete their own business's products
-        if (auth('staff')->user()->role === 'staff' && $loanProduct->provider_id !== auth('staff')->id()) {
+        if (User::isStaffRole(auth('staff')->user()->role) && $loanProduct->provider_id !== auth('staff')->id()) {
             abort(403, 'Unauthorized access to this loan product.');
         }
         
-        $loanProduct->delete();
+        $productName = $loanProduct->name;
+        LoanProduct::query()->whereKey($loanProduct->getKey())->delete();
 
         return redirect()->route('loan-products.index')
-            ->with('success', 'Loan product deleted successfully.');
+            ->with('success', "Loan product '{$productName}' has been deleted successfully!");
     }
 
     public function toggle(LoanProduct $loanProduct): RedirectResponse
     {
         // Ensure staff can only toggle their own business's products
-        if (auth('staff')->user()->role === 'staff' && $loanProduct->provider_id !== auth('staff')->id()) {
+        if (User::isStaffRole(auth('staff')->user()->role) && $loanProduct->provider_id !== auth('staff')->id()) {
             abort(403, 'Unauthorized access to this loan product.');
         }
         
@@ -118,6 +128,6 @@ class LoanProductController extends Controller
 
         $status = $loanProduct->is_active ? 'activated' : 'deactivated';
         return redirect()->back()
-            ->with('success', "Loan product {$status} successfully.");
+            ->with('success', "Loan product '{$loanProduct->name}' has been {$status} successfully!");
     }
 }

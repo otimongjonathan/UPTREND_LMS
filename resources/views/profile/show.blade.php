@@ -10,13 +10,28 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Name') }}</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Business Name') }}</label>
+                        <div class="font-medium text-base text-gray-800">{{ $user->business_name }}</div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Contact Person') }}</label>
                         <div class="font-medium text-base text-gray-800">{{ $user->name }}</div>
                     </div>
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Email') }}</label>
                         <div class="font-medium text-base text-gray-800">{{ $user->email }}</div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Phone Number') }}</label>
+                        <div class="font-medium text-base text-gray-800">{{ $user->tel_no }}</div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">{{ __('Address') }}</label>
+                        <div class="font-medium text-base text-gray-800">{{ $user->address }}</div>
                     </div>
 
                     <div class="mb-6">

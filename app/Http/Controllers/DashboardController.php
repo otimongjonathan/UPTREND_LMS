@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\LoanApplication;
-use App\Models\Repayment;
+use App\Models\LoanRepaymentSchedule;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Auth;
@@ -33,25 +33,13 @@ class DashboardController extends Controller
                     $subQuery->where('provider_id', $user->id);
                 })->whereIn('status', ['approved', 'active', 'completed']);
             })->count(),
-            'pending_repayments' => Repayment::whereHas('loanApplication.product', function ($query) use ($user) {
+            'overdue_repayments' => LoanRepaymentSchedule::whereHas('loanApplication.product', function ($query) use ($user) {
                 $query->where('provider_id', $user->id);
-            })->where('status', 'pending')->count(),
-            'overdue_repayments' => Repayment::whereHas('loanApplication.product', function ($query) use ($user) {
+            })->where('installments_overdue', '>', 0)->count(),
+            'total_repaid' => LoanRepaymentSchedule::whereHas('loanApplication.product', function ($query) use ($user) {
                 $query->where('provider_id', $user->id);
-            })->where('status', '!=', 'completed')
-                ->where('due_date', '<', now()->toDateString())
-                ->count(),
-            'completed_repayments' => Repayment::whereHas('loanApplication.product', function ($query) use ($user) {
-                $query->where('provider_id', $user->id);
-            })->where('status', 'completed')->count(),
-            'total_repaid' => Repayment::whereHas('loanApplication.product', function ($query) use ($user) {
-                $query->where('provider_id', $user->id);
-            })->where('status', 'completed')->sum('paid_amount'),
+            })->sum('total_paid'),
         ];
-        
-        // Add repayment analytics
-        $repaymentAnalytics = \App\Services\RepaymentWorkflowService::getRepaymentAnalytics($user->id);
-        $stats = array_merge($stats, $repaymentAnalytics);
 
         return view('dashboard', compact('stats'));
     }

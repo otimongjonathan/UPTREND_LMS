@@ -19,19 +19,19 @@ class LoanController extends Controller
     {
         $user = Auth::guard('staff')->user();
         
+        // Loans are for issued/active/completed/overdue statuses only
         $query = LoanApplication::with(['user', 'product'])
             ->where(function ($q) use ($user) {
-                // Show loans linked to this provider's loan products
                 $q->whereHas('product', function ($subQuery) use ($user) {
                     $subQuery->where('provider_id', $user->id);
                 })
-                // Also show loans without a product (for backwards compatibility)
                 ->orWhereNull('loan_product_id');
-            });
+            })
+            ->whereIn('status', ['approved', 'active', 'completed', 'overdue']); // Approved (pending issue) and issued loans
         
         // Separate loans by status for grouped display
-        $pendingIssue = (clone $query)->where('status', 'approved')->count();
-        $active = (clone $query)->where('status', 'active')->count();
+        $pendingIssue = (clone $query)->where('status', 'approved')->count(); // Approved applications ready to be issued
+        $active = (clone $query)->where('status', 'active')->count(); // Disbursed and active loans
         $completed = (clone $query)->where('status', 'completed')->count();
         $overdue = (clone $query)->where('status', 'overdue')->count();
         
@@ -74,51 +74,12 @@ class LoanController extends Controller
         }
 
         if (!$loan->loan_product_id) {
-            return redirect()->back()->with('error', 'Loan must be linked to a loan product before issuing. Please assign a loan product first.');
+            return redirect()->back()->with('error', 'Loan must be linked to a loan product before issuing.');
         }
 
-        $scheduleService = app(AutomatedLoanScheduleService::class);
-        $notificationService = app(RepaymentNotificationService::class);
-        
-        try {
-            $loanSummary = $scheduleService->calculateLoanSummary($loan);
-            
-            $loan->update([
-                'status' => 'active',
-                'disbursement_date' => now(),
-                'disbursed_amount' => $loan->amount,
-                'applied_interest_rate' => $loanSummary['annual_rate'],
-                'actual_term_months' => $loanSummary['term_months'],
-                'total_interest' => $loanSummary['total_interest'],
-                'total_repayable' => $loanSummary['total_amount'] + $loanSummary['processing_fee'] + $loanSummary['insurance_premium'],
-                'outstanding_balance' => $loanSummary['total_amount'] + $loanSummary['processing_fee'] + $loanSummary['insurance_premium'],
-                'processing_fee' => $loanSummary['processing_fee'],
-                'insurance_fee' => $loanSummary['insurance_premium']
-            ]);
-            
-            $installmentsCreated = $scheduleService->createRepaymentRecords($loan);
-            
-            LoanDisbursement::create([
-                'loan_application_id' => $loan->id,
-                'disbursement_amount' => $loan->amount,
-                'disbursement_date' => now(),
-                'disbursement_method' => 'bank_transfer',
-                'status' => 'disbursed',
-                'approved_by' => $user->id,
-                'approved_at' => now(),
-                'disbursed_by' => $user->id,
-                'disbursed_at' => now(),
-                'reference_number' => 'DISB-' . $loan->id . '-' . now()->format('YmdHis'),
-                'notes' => 'Automatically created upon loan issuance',
-            ]);
-            
-            $notificationService->sendLoanIssuedNotification($loan);
-            
-            return redirect()->route('loans.show', $loan)
-                ->with('success', "Loan issued and disbursed successfully! {$installmentsCreated} installments created. Customer notified.");
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Error issuing loan: ' . $e->getMessage());
-        }
+        // Redirect to disbursement form instead of directly issuing
+        return redirect()->route('disbursements.create', $loan)
+            ->with('info', 'Please complete the disbursement details to issue this loan.');
     }
 
     public function downloadDocument(LoanApplication $loan, $field)

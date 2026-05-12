@@ -18,8 +18,14 @@
         @method('patch')
 
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input-label for="business_name" :value="__('Business Name')" />
+            <x-text-input id="business_name" name="business_name" type="text" class="mt-1 block w-full" :value="old('business_name', $user->business_name)" required autofocus />
+            <x-input-error class="mt-2" :messages="$errors->get('business_name')" />
+        </div>
+
+        <div>
+            <x-input-label for="name" :value="__('Contact Person Name')" />
+            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
@@ -45,6 +51,18 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="tel_no" :value="__('Phone Number')" />
+            <x-text-input id="tel_no" name="tel_no" type="text" class="mt-1 block w-full" :value="old('tel_no', $user->tel_no)" required />
+            <x-input-error class="mt-2" :messages="$errors->get('tel_no')" />
+        </div>
+
+        <div>
+            <x-input-label for="address" :value="__('Address')" />
+            <textarea id="address" name="address" rows="3" class="mt-1 block w-full border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm" required>{{ old('address', $user->address) }}</textarea>
+            <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         <div class="flex items-center gap-4">

@@ -10,8 +10,15 @@ class Collateral extends Model
 {
     use HasFactory;
 
+    public const COLLATERAL_TYPES = [
+        'Car Logbook',
+        'Land Title',
+        'Property Ownership Title',
+    ];
+
     protected $fillable = [
         'loan_application_id',
+        'loan_supervisor_id',
         'collateral_type',
         'description',
         'estimated_value',
@@ -29,5 +36,10 @@ class Collateral extends Model
     public function loanApplication(): BelongsTo
     {
         return $this->belongsTo(LoanApplication::class);
+    }
+
+    public function loanSupervisor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'loan_supervisor_id');
     }
 }

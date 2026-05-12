@@ -14,7 +14,7 @@ class CreditScoringController extends Controller
 {
     public function index(Request $request): View
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         // Get credit scores for users who have borrowed from this business
         $query = CreditScore::whereHas('user', function ($userQuery) use ($user) {
@@ -54,7 +54,7 @@ class CreditScoringController extends Controller
 
     public function show(CreditScore $creditScore): View
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         $borrower = $creditScore->user;
         
         // Get only this business's loans for this borrower
@@ -68,7 +68,7 @@ class CreditScoringController extends Controller
 
     public function calculate(User $user): RedirectResponse
     {
-        $authUser = Auth::user();
+        $authUser = Auth::guard('staff')->user();
         
         // Only calculate credit score for customers of this business
         $hasLoan = $user->loanApplications()
@@ -88,7 +88,7 @@ class CreditScoringController extends Controller
 
     public function recalculateAll(): RedirectResponse
     {
-        $authUser = Auth::user();
+        $authUser = Auth::guard('staff')->user();
         
         // Get customers who have borrowed from this business
         $users = User::where('role', 'customer')
@@ -107,7 +107,7 @@ class CreditScoringController extends Controller
 
     public function export()
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         // Get credit scores for customers of this business
         $creditScores = CreditScore::whereHas('user', function ($query) use ($user) {

@@ -11,12 +11,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    public const STAFF_ROLES = [
+        'staff',
+        'loan_supervisor',
+        'accountant',
+        'marketer',
+        'operations',
+        'other',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -61,5 +68,10 @@ class User extends Authenticatable
     public function loanApplications(): HasMany
     {
         return $this->hasMany(LoanApplication::class);
+    }
+
+    public static function isStaffRole(?string $role): bool
+    {
+        return in_array($role, self::STAFF_ROLES, true);
     }
 }

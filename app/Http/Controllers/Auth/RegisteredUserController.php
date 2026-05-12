@@ -32,10 +32,10 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'business_name' => ['required', 'string', 'max:255'],
+            'business_name' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'address' => ['required', 'string', 'max:500'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'tel_no' => ['required', 'string', 'max:20'],
+            'tel_no' => ['required', 'string', 'max:20', 'unique:'.User::class],
             'financial_compliance_statement' => ['required', 'file', 'mimes:pdf', 'max:5120'], // 5MB max
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);

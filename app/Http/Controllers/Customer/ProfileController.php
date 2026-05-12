@@ -24,8 +24,8 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'business_name' => ['required', 'string', 'max:255'],
-            'tel_no' => ['required', 'string', 'max:20'],
+            'business_name' => ['required', 'string', 'max:255', Rule::unique('users', 'business_name')->ignore($user->id)],
+            'tel_no' => ['required', 'string', 'max:20', Rule::unique('users', 'tel_no')->ignore($user->id)],
             'address' => ['required', 'string', 'max:500'],
         ]);
 

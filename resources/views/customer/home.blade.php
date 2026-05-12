@@ -105,7 +105,7 @@
     </style>
 
     <!-- Welcome Banner -->
-    <div class="mb-8 bg-gradient-to-r from-orange-600 via-orange-700 to-orange-800 rounded-3xl p-8 text-white shadow-2xl hover-lift glow-animation relative overflow-hidden">
+    <div class="mb-8 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-700 rounded-3xl p-8 text-white shadow-2xl hover-lift glow-animation relative overflow-hidden">
         <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 float-animation"></div>
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24 float-animation" style="animation-delay: 1s;"></div>
         <div class="relative">
@@ -125,7 +125,7 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div class="stat-card bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="stat-card bg-gradient-to-br from-orange-400 to-orange-500 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 float-animation"></div>
             <div class="relative">
                 <div class="flex items-center justify-between mb-3">
@@ -140,7 +140,7 @@
             </div>
         </div>
 
-        <div class="stat-card bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="stat-card bg-gradient-to-br from-amber-400 to-amber-500 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 float-animation"></div>
             <div class="relative">
                 <div class="flex items-center justify-between mb-3">
@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <div class="stat-card bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="stat-card bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 float-animation"></div>
             <div class="relative">
                 <div class="flex items-center justify-between mb-3">
@@ -170,7 +170,7 @@
             </div>
         </div>
 
-        <div class="stat-card bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="stat-card bg-gradient-to-br from-rose-400 to-rose-500 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
             <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 float-animation"></div>
             <div class="relative">
                 <div class="flex items-center justify-between mb-3">
@@ -232,6 +232,82 @@
             </div>
         </a>
     </div>
+
+    <!-- Recommended Loan Products -->
+    @if($recommendedProducts->isNotEmpty())
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-extrabold uppercase tracking-wide text-gray-900 gradient-text">Recommended Loan Products</h2>
+                <p class="text-gray-600 mt-1">Best rates and terms for you</p>
+            </div>
+            <a href="{{ route('customer.loan-products') }}" class="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg font-semibold hover:bg-orange-200 transition-all duration-300">
+                View All →
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach($recommendedProducts as $product)
+            <div class="bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden hover-lift">
+                <!-- Provider Badge -->
+                <div class="bg-gradient-to-r from-orange-400 to-orange-500 p-4 text-white">
+                    <div class="flex items-center gap-2">
+                        <div class="h-10 w-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-orange-100">Provided by</p>
+                            <p class="font-bold text-sm">{{ $product->provider_company }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <!-- Product Header -->
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-gray-900">{{ $product->name }}</h3>
+                        <p class="text-sm text-gray-600 mt-2 line-clamp-2">{{ $product->description }}</p>
+                    </div>
+
+                    <!-- Amount Range -->
+                    <div class="mb-4 p-3 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-200">
+                        <p class="text-xs text-gray-600 mb-1">Loan Amount</p>
+                        <p class="text-lg font-bold text-orange-600">
+                            UGX {{ number_format($product->min_amount, 0) }} - {{ number_format($product->max_amount, 0) }}
+                        </p>
+                    </div>
+
+                    <!-- Key Features -->
+                    <div class="space-y-2 mb-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">Interest Rate</span>
+                            <span class="font-bold text-orange-600">{{ number_format($product->interest_rate, 2) }}%</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">Term</span>
+                            <span class="font-semibold text-gray-900">{{ $product->min_term }}-{{ $product->max_term }} months</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-gray-600">Processing Fee</span>
+                            <span class="font-semibold text-gray-900">{{ number_format($product->processing_fee_percent, 2) }}%</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <a href="{{ route('customer.loans.apply') }}?product_id={{ $product->id }}" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-orange-400 to-orange-500 rounded-xl font-semibold text-sm text-white uppercase tracking-widest hover:from-orange-500 hover:to-orange-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Apply Now
+                    </a>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    </div>
+    @endif
 
     <!-- Information Section -->
     <div class="bg-gradient-to-br from-orange-50 to-white rounded-2xl p-8 shadow-lg border border-orange-100 hover-lift">

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\LoanApplication;
+use App\Models\LoanDisbursement;
+use App\Observers\LoanDisbursementObserver;
 use App\Policies\LoanApplicationPolicy;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -29,5 +31,7 @@ class AppServiceProvider extends ServiceProvider
         foreach ($this->policies as $model => $policy) {
             Gate::policy($model, $policy);
         }
+        
+        LoanDisbursement::observe(LoanDisbursementObserver::class);
     }
 }

@@ -17,7 +17,7 @@ class LoanTrackingController extends Controller
      */
     public function activeLoans()
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         $loans = LoanTrackingService::getActiveLoanTracking($user->id);
         $overdueLoans = LoanTrackingService::getOverdueLoans($user->id);
@@ -44,9 +44,9 @@ class LoanTrackingController extends Controller
      */
     public function repaymentSchedule(LoanApplication $loan)
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
-        if (!$loan->product || $loan->product->provider_id !== $user->id) {
+        if ($loan->product && $loan->product->provider_id !== $user->id) {
             abort(403, 'Unauthorized access to this loan.');
         }
 
@@ -60,9 +60,9 @@ class LoanTrackingController extends Controller
      */
     public function recordPayment(Repayment $repayment)
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
-        if (!$repayment->loanApplication->product || 
+        if ($repayment->loanApplication->product && 
             $repayment->loanApplication->product->provider_id !== $user->id) {
             abort(403, 'Unauthorized to record payment for this repayment.');
         }
@@ -75,9 +75,9 @@ class LoanTrackingController extends Controller
      */
     public function storePayment(Request $request, Repayment $repayment)
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
-        if (!$repayment->loanApplication->product || 
+        if ($repayment->loanApplication->product && 
             $repayment->loanApplication->product->provider_id !== $user->id) {
             abort(403, 'Unauthorized to record payment for this repayment.');
         }
@@ -102,7 +102,7 @@ class LoanTrackingController extends Controller
      */
     public function analytics()
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         $analytics = RepaymentWorkflowService::getRepaymentAnalytics($user->id);
         $monthlySummary = LoanTrackingService::getRepaymentSummary($user->id, 'monthly');
@@ -122,7 +122,7 @@ class LoanTrackingController extends Controller
      */
     public function overdueLoans()
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         $overdueLoans = LoanTrackingService::getOverdueLoans($user->id);
         $overdueRepayments = Repayment::whereHas('loanApplication.product', function ($query) use ($user) {
@@ -144,7 +144,7 @@ class LoanTrackingController extends Controller
      */
     public function exportPaymentReport(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         $fromDate = $request->input('from_date');
         $toDate = $request->input('to_date');
@@ -188,7 +188,7 @@ class LoanTrackingController extends Controller
      */
     public function exportLoanReport(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('staff')->user();
         
         $loans = LoanApplication::with(['user', 'product', 'repayments'])
             ->whereHas('product', function ($query) use ($user) {

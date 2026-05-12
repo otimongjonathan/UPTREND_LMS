@@ -3,7 +3,7 @@
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(16px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -12,14 +12,20 @@
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .7; }
+            0%, 100% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateX(-20px);
+                transform: translateX(-30px);
             }
             to {
                 opacity: 1;
@@ -33,18 +39,60 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
         }
 
         @keyframes glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(217, 106, 43, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(217, 106, 43, 0.6); }
+            0%, 100% { 
+                box-shadow: 0 10px 40px rgba(217, 106, 43, 0.2);
+            }
+            50% { 
+                box-shadow: 0 15px 60px rgba(217, 106, 43, 0.4);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
         }
 
         .widget-card {
-            animation: fadeUp 0.5s ease-out both;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: fadeUp 0.6s ease-out both;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             overflow: hidden;
         }
@@ -56,23 +104,46 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+            pointer-events: none;
         }
 
         .widget-card:hover::before {
             left: 100%;
         }
 
-        .widget-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(217, 106, 43, 0.2);
+        .widget-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
         }
 
-        .widget-card:nth-child(1) { animation-delay: 0.05s; }
-        .widget-card:nth-child(2) { animation-delay: 0.1s; }
-        .widget-card:nth-child(3) { animation-delay: 0.15s; }
-        .widget-card:nth-child(4) { animation-delay: 0.2s; }
+        .widget-card:hover::after {
+            opacity: 1;
+        }
+
+        .widget-card:hover {
+            transform: translateY(-12px) scale(1.03) rotateX(5deg);
+            box-shadow: 0 30px 60px rgba(217, 106, 43, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .widget-card:active {
+            transform: translateY(-8px) scale(1.01);
+            transition: all 0.1s ease;
+        }
+
+        .widget-card:nth-child(1) { animation-delay: 0.1s; }
+        .widget-card:nth-child(2) { animation-delay: 0.2s; }
+        .widget-card:nth-child(3) { animation-delay: 0.3s; }
+        .widget-card:nth-child(4) { animation-delay: 0.4s; }
 
         .gradient-bg {
             background: linear-gradient(135deg, #d96a2b 0%, #b4531f 50%, #8f3f16 100%);
@@ -80,37 +151,77 @@
         }
 
         .stat-badge {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            display: inline-block;
         }
 
         .float-animation {
-            animation: float 3s ease-in-out infinite;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .icon-bounce {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: inline-block;
+        }
+
+        .icon-bounce:hover {
+            animation: bounce 0.6s ease-in-out;
+            transform: scale(1.2) rotate(10deg);
         }
 
         .gradient-text {
-            background: linear-gradient(135deg, #d96a2b, #f48a47);
+            background: linear-gradient(135deg, #d96a2b, #f48a47, #d96a2b);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: shimmer 3s linear infinite;
         }
 
         .shimmer {
             background: linear-gradient(90deg, #d96a2b 0%, #f48a47 50%, #d96a2b 100%);
-            background-size: 1000px 100%;
-            animation: shimmer 3s infinite;
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
         }
 
         .hover-lift {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .hover-lift::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(217, 106, 43, 0.1), rgba(244, 138, 71, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hover-lift:hover::before {
+            opacity: 1;
         }
 
         .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(217, 106, 43, 0.15);
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(217, 106, 43, 0.2);
+        }
+
+        .hover-lift:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .hover-lift > * {
+            position: relative;
+            z-index: 2;
         }
 
         .icon-bounce:hover {
-            animation: float 0.6s ease-in-out;
+            animation: wiggle 0.5s ease-in-out;
         }
 
         .border-gradient {
@@ -126,31 +237,126 @@
             left: -2px;
             right: -2px;
             bottom: -2px;
-            background: linear-gradient(135deg, #d96a2b, #f48a47);
+            background: linear-gradient(135deg, #d96a2b, #f48a47, #d96a2b);
+            background-size: 200% 200%;
             border-radius: inherit;
             z-index: -1;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.4s ease;
+            animation: shimmer 3s ease-in-out infinite;
+            pointer-events: none;
         }
 
         .border-gradient:hover::before {
             opacity: 1;
         }
+
+        .quick-nav-item {
+            animation: scaleIn 0.5s ease-out both;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .quick-nav-item:nth-child(1) { animation-delay: 0.5s; }
+        .quick-nav-item:nth-child(2) { animation-delay: 0.6s; }
+        .quick-nav-item:nth-child(3) { animation-delay: 0.7s; }
+        .quick-nav-item:nth-child(4) { animation-delay: 0.8s; }
+        .quick-nav-item:nth-child(5) { animation-delay: 0.9s; }
+        .quick-nav-item:nth-child(6) { animation-delay: 1.0s; }
+        .quick-nav-item:nth-child(7) { animation-delay: 1.1s; }
+        .quick-nav-item:nth-child(8) { animation-delay: 1.2s; }
+
+        .workspace-card {
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        .performance-card {
+            animation: slideIn 0.8s ease-out 0.4s both;
+        }
     </style>
 
     <x-slot name="header">
         <div class="space-y-1">
-            <h2 class="font-bold text-3xl text-gray-800 leading-tight uppercase tracking-wide">
-                Welcome back, {{ Auth::user()->name }}
+            <h2 class="font-bold text-3xl text-white leading-tight uppercase tracking-wide drop-shadow-lg">
+                Welcome back, {{ Auth::user()->business_name }}
             </h2>
-            <p class="text-sm text-gray-600">Here is an overview of your loan management system.</p>
+            <p class="text-sm text-white/90">Here is an overview of your loan management system.</p>
         </div>
     </x-slot>
+
+    <!-- Quick Navigation Widget - Below Navbar -->
+    <div class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-6">
+            <div class="widget-card bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 gradient-text">📍 Quick Navigation</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <a href="{{ route('applications.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">📋</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Applications</div>
+                            <div class="text-xs text-gray-500 mt-1">Review & approve</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('loans.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">💰</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Loans</div>
+                            <div class="text-xs text-gray-500 mt-1">View & manage</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('loan-products.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">💼</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Products</div>
+                            <div class="text-xs text-gray-500 mt-1">Create & manage</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('borrowers.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">👥</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Borrowers</div>
+                            <div class="text-xs text-gray-500 mt-1">Manage customers</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('repayments.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">💳</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Repayments</div>
+                            <div class="text-xs text-gray-500 mt-1">Track payments</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('disbursements.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">💸</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Disbursements</div>
+                            <div class="text-xs text-gray-500 mt-1">Approve & disburse</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('credit-scores.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">⭐</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Credit Scores</div>
+                            <div class="text-xs text-gray-500 mt-1">View & calculate</div>
+                        </div>
+                    </a>
+                    <a href="{{ route('reports.index') }}" class="quick-nav-item group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift block">
+                        <div class="relative z-10">
+                            <div class="text-2xl mb-2 icon-bounce">📈</div>
+                            <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Reports</div>
+                            <div class="text-xs text-gray-500 mt-1">Analytics & data</div>
+                        </div>
+                    </a>
+                </div>
+                <div class="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg shimmer">
+                    <p class="text-xs text-gray-600">💡 <span class="font-medium">Tip:</span> Hover over any module to see a quick description</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="py-10">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-7">
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                <a href="{{ route('applications.index') }}" class="widget-card block bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
+                <a href="{{ route('applications.index') }}" class="widget-card block bg-gradient-to-br from-amber-400 to-orange-400 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 float-animation"></div>
                     <div class="relative">
                         <div class="flex items-start justify-between">
@@ -168,7 +374,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('loans.index') }}" class="widget-card block bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
+                <a href="{{ route('loans.index') }}" class="widget-card block bg-gradient-to-br from-rose-400 to-pink-400 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 float-animation"></div>
                     <div class="relative">
                         <div class="flex items-start justify-between">
@@ -186,7 +392,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('borrowers.index') }}" class="widget-card block bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
+                <a href="{{ route('borrowers.index') }}" class="widget-card block bg-gradient-to-br from-teal-400 to-cyan-400 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 float-animation"></div>
                     <div class="relative">
                         <div class="flex items-start justify-between">
@@ -204,7 +410,7 @@
                     </div>
                 </a>
 
-                <a href="{{ route('repayments.index') }}" class="widget-card block bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
+                <a href="{{ route('repayments.index') }}" class="widget-card block bg-gradient-to-br from-green-400 to-emerald-400 rounded-2xl shadow-lg p-6 text-white relative overflow-hidden border-gradient">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 float-animation"></div>
                     <div class="relative">
                         <div class="flex items-start justify-between">
@@ -224,7 +430,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 widget-card rounded-2xl overflow-hidden shadow-xl gradient-bg text-white p-8 relative">
+                <div class="lg:col-span-2 workspace-card widget-card rounded-2xl overflow-hidden shadow-xl bg-gradient-to-br from-orange-400 to-red-400 text-white p-8 relative">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32"></div>
                     <div class="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24"></div>
                     <div class="relative">
@@ -236,7 +442,7 @@
                             </div>
                             <h3 class="text-3xl font-bold">UPTREND LMS Workspace</h3>
                         </div>
-                        <p class="mt-3 text-purple-100 max-w-2xl text-lg">
+                        <p class="mt-3 text-orange-50 max-w-2xl text-lg">
                             Start your daily workflow quickly with shortcuts to core modules and monitor your institution performance in one place.
                         </p>
                         <div class="mt-8 flex flex-wrap gap-3">
@@ -262,7 +468,7 @@
                     </div>
                 </div>
 
-                <div class="widget-card bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
+                <div class="performance-card widget-card bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
                     <h3 class="text-lg font-bold text-gray-900">Performance Snapshot</h3>
                     <div class="mt-5 space-y-4 text-sm">
                         <div class="flex items-center justify-between border-b border-gray-100 pb-3">
@@ -281,62 +487,6 @@
                 </div>
             </div>
 
-            <!-- Quick Navigation Widget -->
-            <div class="widget-card bg-white rounded-2xl border border-orange-100 shadow-sm p-6">
-                <h3 class="text-lg font-bold text-gray-900 mb-6 gradient-text">📍 Quick Navigation</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <a href="{{ route('applications.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">📋</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Applications</div>
-                        <div class="text-xs text-gray-500 mt-1">Review & approve</div>
-                    </a>
-
-                    <a href="{{ route('loans.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">💰</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Loans</div>
-                        <div class="text-xs text-gray-500 mt-1">View & manage</div>
-                    </a>
-
-                    <a href="{{ route('loan-products.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">💼</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Products</div>
-                        <div class="text-xs text-gray-500 mt-1">Create & manage</div>
-                    </a>
-
-                    <a href="{{ route('borrowers.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">👥</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Borrowers</div>
-                        <div class="text-xs text-gray-500 mt-1">Manage customers</div>
-                    </a>
-
-                    <a href="{{ route('repayments.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">💳</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Repayments</div>
-                        <div class="text-xs text-gray-500 mt-1">Track payments</div>
-                    </a>
-
-                    <a href="{{ route('disbursements.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">💸</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Disbursements</div>
-                        <div class="text-xs text-gray-500 mt-1">Approve & disburse</div>
-                    </a>
-
-                    <a href="{{ route('credit-scores.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">⭐</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Credit Scores</div>
-                        <div class="text-xs text-gray-500 mt-1">View & calculate</div>
-                    </a>
-
-                    <a href="{{ route('reports.index') }}" class="group p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50 transition-all duration-300 hover-lift">
-                        <div class="text-2xl mb-2 icon-bounce">📈</div>
-                        <div class="text-sm font-semibold text-gray-900 group-hover:text-orange-700 transition-colors">Reports</div>
-                        <div class="text-xs text-gray-500 mt-1">Analytics & data</div>
-                    </a>
-                </div>
-                <div class="mt-4 p-3 bg-orange-50 border border-orange-200 rounded-lg shimmer">
-                    <p class="text-xs text-gray-600">💡 <span class="font-medium">Tip:</span> Hover over any module to see a quick description</p>
-                </div>
-            </div>
         </div>
     </div>
 </x-app-layout>

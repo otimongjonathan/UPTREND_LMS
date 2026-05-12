@@ -1,7 +1,7 @@
 # 🏦 UPTREND LMS - Loan Management System
 
 [![Laravel](https://img.shields.io/badge/Laravel-11.x-red.svg)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![PHP](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.x-38B2AC.svg)](https://tailwindcss.com)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -36,7 +36,7 @@ A comprehensive, modern Loan Management System built with Laravel 11, featuring 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- PHP 8.2 or higher
+- PHP 8.3 or higher
 - Composer
 - Node.js & npm
 - SQLite (development) or MySQL (production)
@@ -238,7 +238,7 @@ php artisan view:cache
 
 ### Production Setup
 1. **Server Requirements**
-   - PHP 8.2+ with extensions
+   - PHP 8.3+ with extensions
    - MySQL 8.0+ or PostgreSQL
    - Redis (recommended)
    - SSL certificate

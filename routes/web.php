@@ -5,16 +5,20 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\RepaymentController;
+use App\Http\Controllers\RepaymentScheduleController;
 use App\Http\Controllers\BorrowerController;
 use App\Http\Controllers\LoanGuarantorController;
 use App\Http\Controllers\CollateralController;
 use App\Http\Controllers\LoanDisbursementController;
 use App\Http\Controllers\CreditScoringController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\LoanProductController;
 use App\Http\Controllers\Customer\AuthController as CustomerAuthController;
 use App\Http\Controllers\Customer\HomeController as CustomerHomeController;
 use App\Http\Controllers\Customer\LoanController as CustomerLoanController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\Customer\NotificationController as CustomerNotificationController;
+use App\Http\Controllers\Customer\SettingsController as CustomerSettingsController;
 use App\Http\Controllers\LoanModificationController;
 use App\Http\Controllers\LoanTrackingController;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +59,11 @@ Route::middleware(['auth:staff'])->group(function () {
 
     Route::get('/borrowers', [BorrowerController::class, 'index'])->name('borrowers.index');
     Route::get('/borrowers/{borrower}', [BorrowerController::class, 'show'])->name('borrowers.show');
+
+    // Staff Management
+    Route::get('/staff', [StaffController::class, 'index'])->name('staff.index');
+    Route::get('/staff/create', [StaffController::class, 'create'])->name('staff.create');
+    Route::post('/staff', [StaffController::class, 'store'])->name('staff.store');
     
     // Loan Products
     Route::get('/loan-products', [LoanProductController::class, 'index'])->name('loan-products.index');
@@ -96,6 +105,12 @@ Route::middleware(['auth:staff'])->group(function () {
     Route::post('/disbursements/{disbursement}/disburse', [LoanDisbursementController::class, 'disburse'])->name('disbursements.disburse');
     Route::post('/disbursements/{disbursement}/verify', [LoanDisbursementController::class, 'verify'])->name('disbursements.verify');
     Route::post('/disbursements/{disbursement}/cancel', [LoanDisbursementController::class, 'cancel'])->name('disbursements.cancel');
+    
+    // Repayment Schedules
+    Route::get('/repayment-schedules', [RepaymentScheduleController::class, 'index'])->name('schedules.index');
+    Route::get('/repayment-schedules/{schedule}', [RepaymentScheduleController::class, 'show'])->name('schedules.show');
+    Route::post('/repayment-schedules/{schedule}/payment', [RepaymentScheduleController::class, 'recordPayment'])->name('schedules.payment');
+    Route::post('/loans/{loan}/regenerate-schedule', [RepaymentScheduleController::class, 'regenerate'])->name('schedules.regenerate');
     
     // Repayment Collection - TEMPORARILY DISABLED
     // Route::get('/loans/{loan}/repayments/collection', [RepaymentCollectionController::class, 'index'])->name('repayments.collection');
@@ -162,6 +177,10 @@ Route::prefix('customer')->name('customer.')->group(function () {
         Route::get('/my-loans/{loan}', [CustomerLoanController::class, 'show'])->name('loans.show');
         Route::get('/my-loans/{loan}/edit', [CustomerLoanController::class, 'edit'])->name('loans.edit');
         Route::patch('/my-loans/{loan}', [CustomerLoanController::class, 'update'])->name('loans.update');
+        Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/{notification}/mark-read', [CustomerNotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+        Route::post('/notifications/mark-all-read', [CustomerNotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+        Route::get('/settings', [CustomerSettingsController::class, 'index'])->name('settings');
         Route::get('/profile', [CustomerProfileController::class, 'index'])->name('profile');
         Route::patch('/profile', [CustomerProfileController::class, 'update'])->name('profile.update');
         Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('logout');

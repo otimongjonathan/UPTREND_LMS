@@ -39,8 +39,8 @@ class RepaymentWorkflowService
         // Generate the repayment schedule using confirmed terms
         $schedule = self::createRepaymentScheduleFromTerms($loan, $terms);
         
-        // Update loan status to active
-        $loan->update(['status' => 'active']);
+        // DO NOT change status to 'active' here - status should remain 'approved' until disbursement
+        // Status will be changed to 'active' by LoanDisbursementController when funds are actually disbursed
         
         Log::info("Repayment schedule generated for loan {$loan->id} with " . count($schedule) . " installments using {$frequency} frequency");
         

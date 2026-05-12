@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class AuthenticateStaff
 
         // Ensure the authenticated user is actually a staff member
         $user = Auth::guard('staff')->user();
-        if ($user->role !== 'staff') {
+        if (! User::isStaffRole($user?->role)) {
             Auth::guard('staff')->logout();
             return redirect()->route('login');
         }

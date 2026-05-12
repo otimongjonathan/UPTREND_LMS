@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,10 +30,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Clear any existing customer session
+        Auth::guard('customer')->logout();
+        
         $request->authenticate();
 
         $user = Auth::guard('staff')->user();
-        if (!$user || $user->role !== 'staff') {
+        if (! $user || ! User::isStaffRole($user->role)) {
             Auth::guard('staff')->logout();
 
             return back()->withErrors([
@@ -53,8 +57,10 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('staff')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
+
+        // Clear any customer session data
+        Auth::guard('customer')->logout();
 
         return redirect('/');
     }
